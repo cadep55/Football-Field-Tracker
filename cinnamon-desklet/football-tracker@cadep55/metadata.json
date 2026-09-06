@@ -1,0 +1,8 @@
+{
+    "uuid": "football-tracker@cadep55",
+    "name": "Football Field Tracker",
+    "description": "Live NFL & college football game tracker on a mini animated field",
+    "icon": "applications-games",
+    "prevent-decorations": false,
+    "max-instances": "20"
+}

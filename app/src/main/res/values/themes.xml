@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.FootballWidget" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">#FF0F0F1A</item>
+        <item name="android:statusBarColor">#FF0A0A14</item>
+        <item name="android:navigationBarColor">#FF0A0A14</item>
+        <item name="colorPrimary">#FF1B5E20</item>
+        <item name="colorPrimaryDark">#FF0A3D12</item>
+        <item name="colorAccent">#FF4CAF50</item>
+    </style>
+</resources>
