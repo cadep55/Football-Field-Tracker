@@ -84,21 +84,8 @@ object EspnApi {
                 val event = eventEl.asJsonObject
                 val dateStr = event.get("date")?.asString ?: continue
 
-                try {
-                    val sdf = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'", java.util.Locale.US)
-                    sdf.timeZone = java.util.TimeZone.getTimeZone("UTC")
-                    val gameDate = sdf.parse(dateStr)
-                    if (gameDate != null && gameDate.time < now) continue
-                } catch (e: Exception) {
-                    try {
-                        val sdf2 = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", java.util.Locale.US)
-                        sdf2.timeZone = java.util.TimeZone.getTimeZone("UTC")
-                        val gameDate2 = sdf2.parse(dateStr)
-                        if (gameDate2 != null && gameDate2.time < now) continue
-                    } catch (e2: Exception) {
-                        continue
-                    }
-                }
+                val gameDate = parseEspnDate(dateStr) ?: continue
+                if (gameDate.time < now) continue
 
                 val competitions = event.getAsJsonArray("competitions") ?: continue
                 val comp = competitions[0].asJsonObject
@@ -119,19 +106,7 @@ object EspnApi {
                 if (homeTeam == null || awayTeam == null) continue
 
                 val displaySdf = java.text.SimpleDateFormat("EEE MMM d, h:mm a", java.util.Locale.US)
-                val dateDisplay = try {
-                    val sdf = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'", java.util.Locale.US)
-                    sdf.timeZone = java.util.TimeZone.getTimeZone("UTC")
-                    val parsed = sdf.parse(dateStr)
-                    if (parsed != null) displaySdf.format(parsed) else "TBD"
-                } catch (e: Exception) {
-                    try {
-                        val sdf2 = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", java.util.Locale.US)
-                        sdf2.timeZone = java.util.TimeZone.getTimeZone("UTC")
-                        val parsed2 = sdf2.parse(dateStr)
-                        if (parsed2 != null) displaySdf.format(parsed2) else "TBD"
-                    } catch (e2: Exception) { "TBD" }
-                }
+                val dateDisplay = displaySdf.format(gameDate)
 
                 return GameState(
                     eventId = event.get("id")?.asString ?: "",
@@ -250,7 +225,10 @@ object EspnApi {
     }
 
     fun fetchCfbTeams(): List<TeamInfo> {
-        return fetchTeamList("https://site.api.espn.com/apis/site/v2/sports/football/college-football/teams?limit=200")
+        // This endpoint ignores "groups" and just returns however many teams you ask
+        // for via "limit", across all divisions (~760 total). limit=200 silently
+        // dropped teams alphabetically past that cut (e.g. TCU, Alabama were missing).
+        return fetchTeamList("https://site.api.espn.com/apis/site/v2/sports/football/college-football/teams?limit=1000")
     }
 
     /**
@@ -400,6 +378,17 @@ object EspnApi {
                     else -> GameStatus.PRE
                 }
 
+                // ESPN's default "current week" scoreboard keeps a finished game as the
+                // team's entry until it rolls its own week pointer over, which can lag.
+                // Once we're at/past the Wednesday following the game, treat it as stale
+                // and let the caller fall back to the team schedule for the next matchup.
+                if (gameStatus == GameStatus.POST) {
+                    val eventDate = event.get("date")?.asString?.let { parseEspnDate(it) }
+                    if (eventDate != null && eventDate.time < mostRecentWednesdayMidnight()) {
+                        continue
+                    }
+                }
+
                 val period = statusObj?.get("period")?.asInt ?: 0
                 val clockStr = statusObj?.get("displayClock")?.asString
                     ?: statusObj?.get("clock")?.asString
@@ -450,6 +439,30 @@ object EspnApi {
             e.printStackTrace()
         }
         return null
+    }
+
+    private fun parseEspnDate(dateStr: String): java.util.Date? {
+        for (pattern in arrayOf("yyyy-MM-dd'T'HH:mm'Z'", "yyyy-MM-dd'T'HH:mm:ss'Z'")) {
+            try {
+                val sdf = java.text.SimpleDateFormat(pattern, java.util.Locale.US)
+                sdf.timeZone = java.util.TimeZone.getTimeZone("UTC")
+                sdf.isLenient = false
+                return sdf.parse(dateStr)
+            } catch (_: Exception) {}
+        }
+        return null
+    }
+
+    private fun mostRecentWednesdayMidnight(): Long {
+        val cal = java.util.Calendar.getInstance()
+        val daysSinceWednesday =
+            (cal.get(java.util.Calendar.DAY_OF_WEEK) - java.util.Calendar.WEDNESDAY + 7) % 7
+        cal.add(java.util.Calendar.DAY_OF_YEAR, -daysSinceWednesday)
+        cal.set(java.util.Calendar.HOUR_OF_DAY, 0)
+        cal.set(java.util.Calendar.MINUTE, 0)
+        cal.set(java.util.Calendar.SECOND, 0)
+        cal.set(java.util.Calendar.MILLISECOND, 0)
+        return cal.timeInMillis
     }
 
     private fun httpGet(urlStr: String): String? {
