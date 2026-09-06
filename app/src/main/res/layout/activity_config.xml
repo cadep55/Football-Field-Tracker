@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FF0F0F1A"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select Your Team"
+        android:textColor="#FFFFFFFF"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-condensed"
+        android:paddingBottom="12dp" />
+
+    <!-- Search bar -->
+    <EditText
+        android:id="@+id/search_box"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:hint="Search teams..."
+        android:textColor="#FFFFFFFF"
+        android:textColorHint="#FF667788"
+        android:textSize="14sp"
+        android:background="#FF1C1C30"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:singleLine="true"
+        android:inputType="text"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Test mode button -->
+    <TextView
+        android:id="@+id/test_mode_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Super Bowl LIX Replay (test)"
+        android:textColor="#FFFFFFFF"
+        android:textSize="14sp"
+        android:background="#FF3D3000"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Loading indicator -->
+    <TextView
+        android:id="@+id/loading_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Loading teams..."
+        android:textColor="#FF667788"
+        android:textSize="13sp"
+        android:gravity="center"
+        android:padding="16dp"
+        android:visibility="visible" />
+
+    <!-- Combined team list (NFL + College) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/teams_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+</LinearLayout>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#CC0A0A14"
+    android:padding="4dp">
+
+    <!-- Scoreboard header: away @ home, scores, clock, down/distance -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="6dp"
+        android:paddingEnd="6dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp">
+
+        <!-- Away team + score -->
+        <TextView
+            android:id="@+id/away_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="AWY 0"
+            android:textColor="#FFFFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed" />
+
+        <!-- Clock / quarter / status -->
+        <TextView
+            android:id="@+id/game_clock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#FFAAAAAA"
+            android:textSize="11sp"
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="center"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp" />
+
+        <!-- Home team + score -->
+        <TextView
+            android:id="@+id/home_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="HME 0"
+            android:textColor="#FFFFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="end" />
+    </LinearLayout>
+
+    <!-- Down and distance / possession -->
+    <TextView
+        android:id="@+id/down_distance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="#FFCCCCCC"
+        android:textSize="10sp"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center"
+        android:paddingBottom="2dp" />
+
+    <!-- The football field bitmap -->
+    <ImageView
+        android:id="@+id/field_image"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true" />
+
+    <!-- Footer: last play or next game date -->
+    <TextView
+        android:id="@+id/last_play"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="#FF999999"
+        android:textSize="9sp"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:paddingTop="2dp" />
+
+</LinearLayout>
