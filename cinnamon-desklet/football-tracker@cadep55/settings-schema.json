@@ -1,0 +1,32 @@
+{
+    "league": {
+        "type": "combobox",
+        "description": "League",
+        "default": "college-football",
+        "options": {
+            "College Football": "college-football",
+            "NFL": "nfl"
+        }
+    },
+    "team-abbr": {
+        "type": "entry",
+        "description": "Team abbreviation",
+        "default": "USC",
+        "tooltip": "ESPN team abbreviation, e.g. USC, KC, MICH, OSU, ALA"
+    },
+    "test-mode": {
+        "type": "switch",
+        "description": "Test mode",
+        "default": false,
+        "tooltip": "Ignores league/team above and replays a sample live game (Super Bowl LIX) to verify the field rendering"
+    },
+    "field-width": {
+        "type": "spinbutton",
+        "description": "Field width",
+        "default": 460,
+        "min": 300,
+        "max": 900,
+        "step": 20,
+        "units": "px"
+    }
+}
